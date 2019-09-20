@@ -4,11 +4,11 @@ setup(
     name="toplayer",
     version="0.0.1",
     keywords=("pip", "tensorflow", "keras", "machinelearning", "deeplearning"),
-    description="eds sdk",
-    long_description="eds sdk for python",
+    description="",
+    long_description="The decorator base class for TensorFlow's Keras advanced API top-level external to other "
+                     "frameworks.",
     license="MIT Licence",
 
-    url="http://xiaoh.me",
     author="chenquan",
     author_email="chenquan@osai.club",
 

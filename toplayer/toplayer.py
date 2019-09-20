@@ -1,9 +1,8 @@
-from functools import wraps
-from wrapt import decorator
-import tensorflow as tf
-from sklearn.linear_model import Lars
 import abc
+from functools import wraps
+
 import numpy as np
+import tensorflow as tf
 
 __all__ = [
     "TopLayer"
@@ -17,7 +16,7 @@ class TopLayer(object, metaclass=abc.ABCMeta):
 
     :parameter
     name: The name of the current layer
-
+    path:
     """
 
     def __init__(self, name, path):
@@ -27,8 +26,8 @@ class TopLayer(object, metaclass=abc.ABCMeta):
     def __call__(self, loss_func):
         """
 
-        :param loss_func:
-        :return:
+        :param loss_func: Wrapper function
+        :return: The path to the TopLayer model.
         """
         model = self.model
         name = self.name
@@ -37,10 +36,10 @@ class TopLayer(object, metaclass=abc.ABCMeta):
         @wraps(loss_func)
         def wrapper(x, y_true, y_pred):
             with tf.Session() as sess:
-                x_value, y_true_v = np.squeeze(np.array(sess.run([x, y_true])))
+                x_value, y_true_v = np.array(sess.run([x, y_true]))
                 # print("x_value", x_value.shape)
                 # print("y_true_v", y_true_v.shape)
-                y_pred_v = model(x_value, y_true_v, path)
+                y_pred_v, = model(x_value, y_true_v, path)
                 y_pred = tf.convert_to_tensor(y_pred_v, name=name)
                 return loss_func(x, y_true, y_pred)
 
@@ -49,8 +48,8 @@ class TopLayer(object, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def model(self, x, y_true_v, path):
         """
-        :param x: Output layer data
-        :param y_true_v: Output layer actual value
+        :param x: Output layer data.
+        :param y_true_v: Output layer actual value.
         :param path: The path to the TopLayer model.
         :return: Output layer prediction value
         """
